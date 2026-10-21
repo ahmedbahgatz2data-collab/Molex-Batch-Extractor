@@ -105,7 +105,7 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
             <h2 className="text-sm font-semibold text-slate-900">
               Excel Spreadsheet Export
             </h2>
-            <span className="text-xs bg-emerald-100 text-emerald-800 font-medium px-2 py-0.5 rounded font-mono">
+            <span className="text-xs bg-rose-100 text-rose-800 font-medium px-2 py-0.5 rounded font-mono">
               .XLSX Format Ready
             </span>
           </div>
@@ -160,8 +160,8 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
             >
               {copiedSuccess ? (
                 <>
-                  <Check className="w-3 h-3 text-emerald-600" />
-                  <span className="text-emerald-600 font-medium">Copied!</span>
+                  <Check className="w-3 h-3 text-rose-600" />
+                  <span className="text-rose-600 font-medium">Copied!</span>
                 </>
               ) : (
                 <>
@@ -189,12 +189,12 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
 
       {/* Success Notification */}
       {downloadSuccess && (
-        <div className="mt-3 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-2 rounded-lg text-xs flex items-center justify-between">
+        <div className="mt-3 bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2 rounded-lg text-xs flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <Check className="w-4 h-4 text-rose-600 shrink-0" />
             <span className="font-medium">{downloadSuccess}</span>
           </div>
-          <span className="text-emerald-600">Saved to Downloads</span>
+          <span className="text-rose-600">Saved to Downloads</span>
         </div>
       )}
 
@@ -209,7 +209,7 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
               type="text"
               value={filename}
               onChange={(e) => setFilename(e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md font-mono text-xs focus:bg-white focus:ring-1 focus:ring-emerald-500"
+              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md font-mono text-xs focus:bg-white focus:ring-1 focus:ring-rose-500"
             />
           </div>
 
@@ -222,7 +222,7 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
               value={sheetName}
               onChange={(e) => setSheetName(e.target.value)}
               maxLength={31}
-              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs focus:bg-white focus:ring-1 focus:ring-emerald-500"
+              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md text-xs focus:bg-white focus:ring-1 focus:ring-rose-500"
             />
           </div>
 
@@ -233,7 +233,7 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
                   type="checkbox"
                   checked={includeInputLink}
                   onChange={(e) => setIncludeInputLink(e.target.checked)}
-                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  className="rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                 />
                 <span className="text-slate-700">Include Input Molex Link column</span>
               </label>
@@ -243,7 +243,7 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
                   type="checkbox"
                   checked={includeTimestamp}
                   onChange={(e) => setIncludeTimestamp(e.target.checked)}
-                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  className="rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                 />
                 <span className="text-slate-700">Include Extraction Timestamp</span>
               </label>
@@ -253,18 +253,18 @@ export const ExportToolbar: React.FC<ExportToolbarProps> = ({
                   type="checkbox"
                   checked={includeIndex}
                   onChange={(e) => setIncludeIndex(e.target.checked)}
-                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  className="rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                 />
                 <span className="text-slate-700">Include Row Index (#)</span>
               </label>
 
               {selectedIds.size > 0 && (
-                <label className="inline-flex items-center space-x-1.5 cursor-pointer text-emerald-700 font-medium">
+                <label className="inline-flex items-center space-x-1.5 cursor-pointer text-rose-700 font-medium">
                   <input
                     type="checkbox"
                     checked={exportSelectedOnly}
                     onChange={(e) => setExportSelectedOnly(e.target.checked)}
-                    className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    className="rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                   />
                   <span>Export {selectedIds.size} selected only</span>
                 </label>

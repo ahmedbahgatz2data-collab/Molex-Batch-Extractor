@@ -132,18 +132,15 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
   };
 
   const loadMolexSingleExample = () => {
-    const molexUrl = 'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=855055114';
+    const molexUrl = 'https://search.molex.com/api/search/productdetails?q=1200661244';
     setUrlsText(molexUrl);
     setActiveTab('urls');
   };
 
   const loadMolexBatchExample = () => {
     const molexUrls = [
-      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=855055114',
-      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=1053091104',
-      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=0500588000',
-      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=2053380002',
-      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=09501061'
+      'https://search.molex.com/api/search/productdetails?q=1200661244',
+      'https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=1200661244'
     ].join('\n');
     setUrlsText(molexUrls);
     setActiveTab('urls');
@@ -239,10 +236,10 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Link2 className="w-3.5 h-3.5 text-emerald-700" />
+            <Link2 className="w-3.5 h-3.5 text-rose-700" />
             <span>Molex JSON Links</span>
             {parsedUrlCount > 0 && (
-              <span className="ml-1 text-[11px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-mono font-bold">
+              <span className="ml-1 text-[11px] bg-rose-100 text-rose-800 px-1.5 py-0.2 rounded font-mono font-bold">
                 {parsedUrlCount}
               </span>
             )}
@@ -281,14 +278,14 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
             onClick={handleToggleStealthMode}
             className={`inline-flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
               config.stealthMode
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-2xs'
+                ? 'bg-rose-50 text-rose-800 border-rose-300 shadow-2xs'
                 : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'
             }`}
             title="Stealth Mode: Bypasses anti-bot firewalls and CORS by spoofing Chrome 131 headers & dynamic origin"
           >
-            <Shield className={`w-3.5 h-3.5 ${config.stealthMode ? 'text-emerald-600 fill-emerald-100' : 'text-slate-400'}`} />
+            <Shield className={`w-3.5 h-3.5 ${config.stealthMode ? 'text-rose-600 fill-rose-100' : 'text-slate-400'}`} />
             <span>Stealth Mode</span>
-            <span className={`text-[10px] px-1 py-0.2 rounded font-mono ${config.stealthMode ? 'bg-emerald-200/60 text-emerald-900' : 'bg-slate-200 text-slate-600'}`}>
+            <span className={`text-[10px] px-1 py-0.2 rounded font-mono ${config.stealthMode ? 'bg-rose-200/60 text-rose-900' : 'bg-slate-200 text-slate-600'}`}>
               {config.stealthMode ? 'ACTIVE' : 'OFF'}
             </span>
           </button>
@@ -297,21 +294,11 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
             <div className="flex items-center space-x-1.5 text-xs">
               <button
                 type="button"
-                onClick={loadMolexSingleExample}
-                className="px-2.5 py-1 text-xs font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-md transition-colors"
-                title="Paste requested Molex sample link: https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=855055114"
-              >
-                Insert Part 855055114
-              </button>
-
-              <button
-                type="button"
                 onClick={loadMolexBatchExample}
-                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-md transition-colors inline-flex items-center space-x-1"
-                title="Load batch of Molex sample parts"
+                className="px-2.5 py-1 text-xs font-medium text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded-md transition-colors inline-flex items-center space-x-1"
+                title="Insert default Molex batch URLs"
               >
-                <Layers className="w-3 h-3 text-slate-500" />
-                <span>Batch (5 Parts)</span>
+                <span>Insert Default URLs</span>
               </button>
             </div>
           )}
@@ -346,7 +333,7 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label htmlFor="url-textarea" className="text-xs font-semibold text-slate-700 uppercase tracking-wider flex items-center space-x-1.5">
-                <Cpu className="w-3.5 h-3.5 text-emerald-600" />
+                <Cpu className="w-3.5 h-3.5 text-rose-600" />
                 <span>Enter Molex Unpublished-Part JSON Link(s)</span>
               </label>
               <span className="text-xs text-slate-400">
@@ -360,19 +347,19 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
               onChange={(e) => setUrlsText(e.target.value)}
               placeholder={`https://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=855055114\nhttps://www.molex.com/bin/molex/mulesoft/unpublished-part?partNumber=1053091104`}
               rows={4}
-              className="w-full font-mono text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-y"
+              className="w-full font-mono text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white resize-y"
             />
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
                 <span className="inline-flex items-center font-semibold text-slate-700">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 mr-1" />
+                  <Check className="w-3.5 h-3.5 text-rose-600 mr-1" />
                   Extracts 4 fields:
                 </span>
-                <span className="font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">1. productNumberDisplay</span>
-                <span className="font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">2. productNumberHyphen</span>
-                <span className="font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">3. productNumberSap</span>
-                <span className="font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">4. productStatus</span>
+                <span className="font-mono text-rose-800 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-medium">1. productNumberDisplay</span>
+                <span className="font-mono text-rose-800 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-medium">2. productNumberHyphen</span>
+                <span className="font-mono text-rose-800 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-medium">3. productNumberSap</span>
+                <span className="font-mono text-rose-800 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-medium">4. productStatus</span>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -442,7 +429,7 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
               }}
               placeholder={`{\n  "productNumberDisplay": "855055114",\n  "productNumberHyphen": "85505-5114",\n  "productNumberSap": "0855055114",\n  "productStatus": "Obsolescence"\n}`}
               rows={6}
-              className="w-full font-mono text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-y"
+              className="w-full font-mono text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-lg p-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:bg-white resize-y"
             />
 
             {rawJsonError && (
@@ -466,7 +453,7 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
                 type="button"
                 onClick={handleProcessRawJson}
                 disabled={isLoading || !rawJsonText.trim()}
-                className="inline-flex items-center space-x-2 px-5 py-2 text-xs sm:text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center space-x-2 px-5 py-2 text-xs sm:text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Extract Molex Fields from JSON</span>
@@ -520,7 +507,7 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
                     onChange={(e) =>
                       onConfigChange({ ...config, strictMode: e.target.checked })
                     }
-                    className="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    className="mt-0.5 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                   />
                   <div>
                     <span className="font-medium text-slate-800">Strict Key Matching</span>
@@ -535,10 +522,10 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-slate-800 flex items-center space-x-1">
-                    <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                    <Shield className="w-3.5 h-3.5 text-rose-600" />
                     <span>Stealth & Anti-Bot Bypass</span>
                   </span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${config.stealthMode ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${config.stealthMode ? 'bg-rose-100 text-rose-800' : 'bg-slate-200 text-slate-600'}`}>
                     {config.stealthMode ? 'ON' : 'OFF'}
                   </span>
                 </div>
@@ -584,7 +571,7 @@ export const UrlInputSection: React.FC<UrlInputSectionProps> = ({
                     <button
                       type="button"
                       onClick={handleSaveCookie}
-                      className="px-2 py-1 bg-emerald-700 text-white rounded text-xs hover:bg-emerald-800"
+                      className="px-2 py-1 bg-rose-700 text-white rounded text-xs hover:bg-rose-800"
                     >
                       Save
                     </button>

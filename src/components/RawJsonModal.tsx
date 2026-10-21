@@ -32,7 +32,7 @@ export const RawJsonModal: React.FC<RawJsonModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 bg-slate-50">
           <div className="flex items-center space-x-2 min-w-0 pr-4">
-            <Code2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <Code2 className="w-4 h-4 text-rose-600 shrink-0" />
             <h3 className="text-sm font-semibold text-slate-900 truncate">
               {title}
             </h3>
@@ -44,8 +44,8 @@ export const RawJsonModal: React.FC<RawJsonModalProps> = ({
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-600">Copied</span>
+                  <Check className="w-3.5 h-3.5 text-rose-600" />
+                  <span className="text-rose-600">Copied</span>
                 </>
               ) : (
                 <>
@@ -64,7 +64,7 @@ export const RawJsonModal: React.FC<RawJsonModalProps> = ({
         </div>
 
         {/* JSON Code Viewer */}
-        <div className="p-4 flex-1 overflow-auto bg-slate-950 font-mono text-xs text-emerald-400">
+        <div className="p-4 flex-1 overflow-auto bg-slate-950 font-mono text-xs text-rose-400">
           <pre className="whitespace-pre-wrap leading-relaxed">
             {formatted}
           </pre>

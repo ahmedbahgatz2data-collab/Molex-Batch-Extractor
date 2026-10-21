@@ -372,7 +372,7 @@ export default function App() {
         {/* Real-Time Processing Progress Banner with Pause / Resume and Stop Options */}
         {progress && (
           <div className={`border rounded-xl p-3.5 shadow-2xs transition-colors ${
-            isPaused ? 'bg-amber-50/90 border-amber-300' : 'bg-emerald-50 border-emerald-200'
+            isPaused ? 'bg-amber-50/90 border-amber-300' : 'bg-rose-50 border-rose-200'
           }`}>
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="flex items-center space-x-2">
@@ -381,14 +381,14 @@ export default function App() {
                     Paused
                   </span>
                 ) : (
-                  <Loader2 className="w-4 h-4 text-emerald-600 animate-spin" />
+                  <Loader2 className="w-4 h-4 text-rose-600 animate-spin" />
                 )}
-                <span className={`text-xs font-semibold ${isPaused ? 'text-amber-950' : 'text-emerald-950'}`}>
+                <span className={`text-xs font-semibold ${isPaused ? 'text-amber-950' : 'text-rose-950'}`}>
                   {isPaused ? 'Queue Paused:' : 'Processing Link'} {progress.completed} of {progress.total} (
                   {Math.round((progress.completed / Math.max(1, progress.total)) * 100)}%)
                 </span>
                 <span className="text-slate-400">·</span>
-                <span className={`text-[11px] truncate max-w-xs sm:max-w-md font-mono ${isPaused ? 'text-amber-800' : 'text-emerald-700'}`}>
+                <span className={`text-[11px] truncate max-w-xs sm:max-w-md font-mono ${isPaused ? 'text-amber-800' : 'text-rose-700'}`}>
                   {progress.currentUrl}
                 </span>
               </div>
@@ -431,10 +431,10 @@ export default function App() {
               </div>
             </div>
             {/* Animated progress track */}
-            <div className={`w-full rounded-full h-2 overflow-hidden ${isPaused ? 'bg-amber-200' : 'bg-emerald-200/60'}`}>
+            <div className={`w-full rounded-full h-2 overflow-hidden ${isPaused ? 'bg-amber-200' : 'bg-rose-200/60'}`}>
               <div
                 className={`h-2 rounded-full transition-all duration-200 ease-out ${
-                  isPaused ? 'bg-amber-500' : 'bg-emerald-600'
+                  isPaused ? 'bg-amber-500' : 'bg-rose-600'
                 }`}
                 style={{
                   width: `${Math.round((progress.completed / Math.max(1, progress.total)) * 100)}%`,

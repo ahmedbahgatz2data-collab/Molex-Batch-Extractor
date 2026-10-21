@@ -105,7 +105,7 @@ export const UrlStatusList: React.FC<UrlStatusListProps> = ({
           <button
             onClick={() => { setFilterTab('success'); setPage(1); }}
             className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
-              filterTab === 'success' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+              filterTab === 'success' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
             }`}
           >
             Success ({totalSuccess})
@@ -183,7 +183,7 @@ export const UrlStatusList: React.FC<UrlStatusListProps> = ({
                     <Loader2 className="w-4 h-4 text-blue-500 animate-spin shrink-0 mt-0.5" />
                   )}
                   {job.status === 'success' && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                   )}
                   {job.status === 'error' && (
                     isBotBlocked ? (
@@ -240,10 +240,10 @@ export const UrlStatusList: React.FC<UrlStatusListProps> = ({
                                 href={job.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center space-x-1 px-2.5 py-1 text-xs font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded shadow-2xs transition-colors cursor-pointer"
+                                className="inline-flex items-center space-x-1 px-2.5 py-1 text-xs font-medium text-rose-800 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded shadow-2xs transition-colors cursor-pointer"
                                 title="Click to view JSON directly in your residential browser session"
                               >
-                                <ExternalLink className="w-3.5 h-3.5 text-emerald-700" />
+                                <ExternalLink className="w-3.5 h-3.5 text-rose-700" />
                                 <span>1. Open Link in Tab</span>
                               </a>
                             )}
@@ -270,8 +270,8 @@ export const UrlStatusList: React.FC<UrlStatusListProps> = ({
                             >
                               {copiedScriptId === job.id ? (
                                 <>
-                                  <Check className="w-3 h-3 text-emerald-600" />
-                                  <span className="text-emerald-700">Snippet Copied!</span>
+                                  <Check className="w-3 h-3 text-rose-600" />
+                                  <span className="text-rose-700">Snippet Copied!</span>
                                 </>
                               ) : (
                                 <>

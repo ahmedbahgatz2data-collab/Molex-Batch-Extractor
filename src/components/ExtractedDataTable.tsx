@@ -10,11 +10,10 @@ import {
   Code2, 
   Check, 
   Trash2,
-  FileSpreadsheet,
-  AlertCircle,
   ChevronLeft,
   ChevronRight,
-  Cpu
+  Cpu,
+  FileText
 } from 'lucide-react';
 
 interface ExtractedDataTableProps {
@@ -27,7 +26,7 @@ interface ExtractedDataTableProps {
   onInspectRecordJson: (rec: ExtractedRecord) => void;
 }
 
-type SortField = 'index' | 'sourceUrl' | 'display' | 'hyphen' | 'sap' | 'status';
+type SortField = 'index' | 'sourceUrl' | 'display' | 'hyphen' | 'sap' | 'status' | 'datasourcePdf';
 type SortOrder = 'asc' | 'desc';
 
 export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
@@ -48,7 +47,6 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
 
-  // Extract unique statuses for dropdown
   const uniqueStatuses = useMemo(() => {
     const set = new Set<string>();
     records.forEach((r) => {
@@ -57,7 +55,6 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
     return Array.from(set).sort();
   }, [records]);
 
-  // Extract unique sources for dropdown
   const uniqueSources = useMemo(() => {
     const set = new Set<string>();
     records.forEach((r) => {
@@ -66,26 +63,23 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
     return Array.from(set).sort();
   }, [records]);
 
-  // Filtered & Sorted records
   const filteredRecords = useMemo(() => {
     return records.filter((rec) => {
-      // Status filter
       if (statusFilter !== 'ALL' && rec.productStatus !== statusFilter) {
         return false;
       }
-      // Source filter
       if (sourceFilter !== 'ALL' && rec.sourceUrl !== sourceFilter) {
         return false;
       }
-      // Search term
       if (searchTerm.trim()) {
         const query = searchTerm.toLowerCase();
         const matchesDisplay = (rec.productNumberDisplay || '').toLowerCase().includes(query);
         const matchesHyphen = (rec.productNumberHyphen || '').toLowerCase().includes(query);
         const matchesSap = (rec.productNumberSap || '').toLowerCase().includes(query);
         const matchesStatus = (rec.productStatus || '').toLowerCase().includes(query);
+        const matchesDatasheet = (rec.datasourcePdf || '').toLowerCase().includes(query);
         const matchesSource = (rec.sourceUrl || '').toLowerCase().includes(query);
-        return matchesDisplay || matchesHyphen || matchesSap || matchesStatus || matchesSource;
+        return matchesDisplay || matchesHyphen || matchesSap || matchesStatus || matchesDatasheet || matchesSource;
       }
       return true;
     });
@@ -108,6 +102,9 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
       } else if (sortField === 'status') {
         valA = (a.productStatus || '').toLowerCase();
         valB = (b.productStatus || '').toLowerCase();
+      } else if (sortField === 'datasourcePdf') {
+        valA = (a.datasourcePdf || '').toLowerCase();
+        valB = (b.datasourcePdf || '').toLowerCase();
       } else if (sortField === 'sourceUrl') {
         valA = a.sourceUrl.toLowerCase();
         valB = b.sourceUrl.toLowerCase();
@@ -136,11 +133,9 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
     setTimeout(() => setCopiedId(null), 1500);
   };
 
-  // Calculate pagination
   const totalPages = Math.max(1, Math.ceil(sortedRecords.length / pageSize));
   const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
 
-  // Reset to page 1 when search or filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, sourceFilter, pageSize]);
@@ -155,16 +150,10 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
   const getStatusBadgeStyle = (status: string) => {
     const lower = (status || '').toLowerCase();
     if (lower.includes('active') || lower.includes('published') || lower.includes('in stock') || lower.includes('available')) {
-      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    }
-    if (lower.includes('obsolescence') || lower.includes('obsolete') || lower.includes('discontinued') || lower.includes('eol')) {
       return 'bg-rose-50 text-rose-700 border-rose-200';
     }
-    if (lower.includes('planned') || lower.includes('development') || lower.includes('pending') || lower.includes('draft')) {
-      return 'bg-blue-50 text-blue-700 border-blue-200';
-    }
-    if (lower.includes('unpublished') || lower.includes('custom') || lower.includes('restricted')) {
-      return 'bg-purple-50 text-purple-700 border-purple-200';
+    if (lower.includes('obsolescence') || lower.includes('obsolete') || lower.includes('discontinued') || lower.includes('eol')) {
+      return 'bg-amber-50 text-amber-700 border-amber-200';
     }
     return 'bg-slate-100 text-slate-700 border-slate-200';
   };
@@ -172,14 +161,14 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
   if (records.length === 0) {
     return (
       <div className="bg-white border border-slate-200 rounded-xl p-12 text-center shadow-xs">
-        <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-3">
+        <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-700 mx-auto flex items-center justify-center mb-3">
           <Cpu className="w-6 h-6" />
         </div>
         <h3 className="text-sm font-semibold text-slate-900 mb-1">
           No Extracted Molex Records Yet
         </h3>
         <p className="text-xs text-slate-500 max-w-lg mx-auto mb-4">
-          Paste Molex unpublished-part JSON endpoints above to extract <code className="font-mono text-emerald-700 font-semibold">productNumberDisplay</code>, <code className="font-mono text-emerald-700 font-semibold">productNumberHyphen</code>, <code className="font-mono text-emerald-700 font-semibold">productNumberSap</code>, and <code className="font-mono text-emerald-700 font-semibold">productStatus</code> directly into an Excel spreadsheet.
+          Paste Molex API endpoints or search links above to extract <code className="font-mono font-semibold" style={{ color: '#CD3433' }}>productNumberDisplay</code>, <code className="font-mono font-semibold" style={{ color: '#CD3433' }}>productNumberHyphen</code>, <code className="font-mono font-semibold" style={{ color: '#CD3433' }}>productNumberSap</code>, <code className="font-mono font-semibold" style={{ color: '#CD3433' }}>productStatus</code>, and <code className="font-mono font-semibold" style={{ color: '#CD3433' }}>datasourcePdf</code> into an Excel spreadsheet.
         </p>
       </div>
     );
@@ -198,10 +187,10 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Search part number, SAP, status..."
+              placeholder="Search part number, SAP, PDF..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-rose-500"
             />
           </div>
 
@@ -210,7 +199,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500"
             >
               <option value="ALL">All Statuses ({uniqueStatuses.length})</option>
               {uniqueStatuses.map((s) => (
@@ -226,7 +215,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
             <select
               value={sourceFilter}
               onChange={(e) => setSourceFilter(e.target.value)}
-              className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 max-w-[180px] truncate"
+              className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500 max-w-[180px] truncate"
             >
               <option value="ALL">All Sources ({uniqueSources.length})</option>
               {uniqueSources.map((s) => (
@@ -270,13 +259,13 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                     if (input) input.indeterminate = selectedIds.size > 0 && !allTotalSelected;
                   }}
                   onChange={onToggleSelectAll}
-                  className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                  className="rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
                   title="Select all records"
                 />
               </th>
               <th className="py-2.5 px-3 w-12 text-slate-500">#</th>
 
-              {/* 1. Input Molex Link */}
+              {/* Input Molex Link */}
               <th
                 onClick={() => handleSort('sourceUrl')}
                 className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
@@ -284,14 +273,14 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span>Input Molex Link</span>
                   {sortField === 'sourceUrl' ? (
-                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-600" /> : <ArrowDown className="w-3 h-3 text-emerald-600" />
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
                   ) : (
                     <ArrowUpDown className="w-3 h-3 text-slate-400" />
                   )}
                 </div>
               </th>
 
-              {/* 2. productNumberDisplay */}
+              {/* productNumberDisplay */}
               <th
                 onClick={() => handleSort('display')}
                 className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
@@ -299,14 +288,14 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span className="font-bold text-slate-900">productNumberDisplay</span>
                   {sortField === 'display' ? (
-                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-600" /> : <ArrowDown className="w-3 h-3 text-emerald-600" />
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
                   ) : (
                     <ArrowUpDown className="w-3 h-3 text-slate-400" />
                   )}
                 </div>
               </th>
 
-              {/* 3. productNumberHyphen */}
+              {/* productNumberHyphen */}
               <th
                 onClick={() => handleSort('hyphen')}
                 className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
@@ -314,14 +303,14 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span className="font-bold text-slate-900">productNumberHyphen</span>
                   {sortField === 'hyphen' ? (
-                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-600" /> : <ArrowDown className="w-3 h-3 text-emerald-600" />
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
                   ) : (
                     <ArrowUpDown className="w-3 h-3 text-slate-400" />
                   )}
                 </div>
               </th>
 
-              {/* 4. productNumberSap */}
+              {/* productNumberSap */}
               <th
                 onClick={() => handleSort('sap')}
                 className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
@@ -329,14 +318,14 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span className="font-bold text-slate-900">productNumberSap</span>
                   {sortField === 'sap' ? (
-                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-600" /> : <ArrowDown className="w-3 h-3 text-emerald-600" />
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
                   ) : (
                     <ArrowUpDown className="w-3 h-3 text-slate-400" />
                   )}
                 </div>
               </th>
 
-              {/* 5. productStatus */}
+              {/* productStatus */}
               <th
                 onClick={() => handleSort('status')}
                 className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
@@ -344,7 +333,22 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span className="font-bold text-slate-900">productStatus</span>
                   {sortField === 'status' ? (
-                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-600" /> : <ArrowDown className="w-3 h-3 text-emerald-600" />
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
+                  ) : (
+                    <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                  )}
+                </div>
+              </th>
+
+              {/* datasourcePdf */}
+              <th
+                onClick={() => handleSort('datasourcePdf')}
+                className="py-2.5 px-3 cursor-pointer hover:bg-slate-200/50 transition-colors"
+              >
+                <div className="flex items-center space-x-1">
+                  <span className="font-bold text-slate-900">datasourcePdf</span>
+                  {sortField === 'datasourcePdf' ? (
+                    sortOrder === 'asc' ? <ArrowUp className="w-3 h-3" style={{ color: '#CD3433' }} /> : <ArrowDown className="w-3 h-3" style={{ color: '#CD3433' }} />
                   ) : (
                     <ArrowUpDown className="w-3 h-3 text-slate-400" />
                   )}
@@ -357,7 +361,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
           <tbody className="divide-y divide-slate-100">
             {paginatedRecords.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-8 text-center text-slate-500">
+                <td colSpan={9} className="py-8 text-center text-slate-500">
                   No records match your search or filter.
                 </td>
               </tr>
@@ -370,7 +374,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                   <tr
                     key={rec.id}
                     className={`hover:bg-slate-50 transition-colors ${
-                      isSelected ? 'bg-emerald-50/40' : ''
+                      isSelected ? 'bg-rose-50/40' : ''
                     }`}
                   >
                     {/* Checkbox */}
@@ -379,7 +383,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => onToggleSelect(rec.id)}
-                        className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                        className="rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer"
                       />
                     </td>
 
@@ -389,7 +393,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                     </td>
 
                     {/* Source Molex URL */}
-                    <td className="py-2.5 px-3 max-w-[200px]">
+                    <td className="py-2.5 px-3 max-w-[180px]">
                       <div className="flex items-center space-x-1.5">
                         <span
                           className="font-mono text-slate-500 text-[11px] truncate block"
@@ -411,8 +415,8 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                       </div>
                     </td>
 
-                    {/* 1- productNumberDisplay */}
-                    <td className="py-2.5 px-3 max-w-[160px]">
+                    {/* productNumberDisplay */}
+                    <td className="py-2.5 px-3 max-w-[140px]">
                       {rec.productNumberDisplay ? (
                         <div className="flex items-center space-x-1.5">
                           <span className="font-mono font-semibold text-slate-900 text-xs">
@@ -425,7 +429,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                             title="Copy Display Number"
                           >
                             {copiedId === `${rec.id}-disp` ? (
-                              <Check className="w-3 h-3 text-emerald-600" />
+                              <Check className="w-3 h-3" style={{ color: '#CD3433' }} />
                             ) : (
                               <Copy className="w-3 h-3" />
                             )}
@@ -436,10 +440,10 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                       )}
                     </td>
 
-                    {/* 2- productNumberHyphen */}
-                    <td className="py-2.5 px-3 max-w-[160px]">
+                    {/* productNumberHyphen */}
+                    <td className="py-2.5 px-3 max-w-[140px]">
                       {rec.productNumberHyphen ? (
-                        <span className="font-mono font-medium text-emerald-800 bg-emerald-50/80 px-2 py-0.5 rounded border border-emerald-200 text-xs inline-block">
+                        <span className="font-mono font-medium px-2 py-0.5 rounded border text-xs inline-block" style={{ color: '#CD3433', backgroundColor: '#FDF2F2', borderColor: '#F8D7D7' }}>
                           {rec.productNumberHyphen}
                         </span>
                       ) : (
@@ -447,8 +451,8 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                       )}
                     </td>
 
-                    {/* 3- productNumberSap */}
-                    <td className="py-2.5 px-3 max-w-[160px]">
+                    {/* productNumberSap */}
+                    <td className="py-2.5 px-3 max-w-[140px]">
                       {rec.productNumberSap ? (
                         <span className="font-mono text-slate-700 bg-slate-100 px-2 py-0.5 rounded text-xs inline-block">
                           {rec.productNumberSap}
@@ -458,7 +462,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                       )}
                     </td>
 
-                    {/* 4- productStatus */}
+                    {/* productStatus */}
                     <td className="py-2.5 px-3">
                       {rec.productStatus ? (
                         <span
@@ -473,20 +477,40 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                       )}
                     </td>
 
+                    {/* datasourcePdf */}
+                    <td className="py-2.5 px-3 max-w-[200px]">
+                      {rec.datasourcePdf ? (
+                        <div className="flex items-center space-x-1.5">
+                          <a
+                            href={rec.datasourcePdf}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-blue-600 hover:text-blue-800 hover:underline truncate text-[11px] block flex items-center space-x-1"
+                            title={rec.datasourcePdf}
+                          >
+                            <FileText className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{rec.datasourcePdf}</span>
+                          </a>
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 italic text-[11px]">No PDF</span>
+                      )}
+                    </td>
+
                     {/* Actions */}
                     <td className="py-2.5 px-3 text-right">
                       <div className="flex items-center justify-end space-x-1">
                         <button
                           type="button"
                           onClick={() => handleCopyValue(
-                            `${rec.productNumberDisplay}\t${rec.productNumberHyphen}\t${rec.productNumberSap}\t${rec.productStatus}`,
+                            `${rec.productNumberDisplay}\t${rec.productNumberHyphen}\t${rec.productNumberSap}\t${rec.productStatus}\t${rec.datasourcePdf}`,
                             rec.id
                           )}
                           className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded"
                           title="Copy row values as TSV"
                         >
                           {copiedId === rec.id ? (
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <Check className="w-3.5 h-3.5" style={{ color: '#CD3433' }} />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
                           )}
@@ -527,7 +551,7 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
             <select
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
+              className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-rose-500 font-medium"
             >
               <option value={25}>25</option>
               <option value={50}>50</option>
@@ -573,11 +597,8 @@ export const ExtractedDataTable: React.FC<ExtractedDataTableProps> = ({
                   <button
                     key={p}
                     onClick={() => setCurrentPage(p)}
-                    className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
-                      safeCurrentPage === p
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-                    }`}
+                    className={`w-7 h-7 rounded text-xs font-medium transition-colors text-white`}
+                    style={safeCurrentPage === p ? { backgroundColor: '#CD3433' } : { backgroundColor: '#FFFFFF', color: '#334155', border: '1px solid #CBD5E1' }}
                   >
                     {p}
                   </button>

@@ -5,6 +5,7 @@ export interface ExtractedRecord {
   productNumberHyphen: string;
   productNumberSap: string;
   productStatus: string;
+  datasourcePdf: string; // Added datasheetPDF field
   description?: string;
   extractedAt: string;
   rawItem?: Record<string, unknown>;
@@ -13,6 +14,7 @@ export interface ExtractedRecord {
     hasHyphen: boolean;
     hasSap: boolean;
     hasStatus: boolean;
+    hasDatasheet: boolean;
   };
 }
 
@@ -34,18 +36,18 @@ export interface UrlJob {
 export interface StealthOptions {
   browserProfile: 'chrome-131' | 'edge-131' | 'safari-mac';
   autoReferer: boolean;
-  customCookies?: string; // e.g. Molex/Akamai session cookies (_abck, bm_sv, ak_bmsc)
-  customProxyUrl?: string; // Optional custom upstream residential/CORS proxy URL
+  customCookies?: string;
+  customProxyUrl?: string;
 }
 
 export interface ExtractionConfig {
-  strictMode: boolean; // strict exact "productNumberDisplay", "productNumberHyphen", etc. vs aliases
+  strictMode: boolean;
   resolveRelativeUrls: boolean;
-  includeInputLinkInExcel: boolean; // include "Input Molex Link" column
+  includeInputLinkInExcel: boolean;
   includeTimestampInExcel: boolean;
   includeIndexInExcel: boolean;
   customHeaders: Record<string, string>;
-  stealthMode: boolean; // 🕵️ Stealth Mode toggle
+  stealthMode: boolean;
   stealthOptions: StealthOptions;
 }
 

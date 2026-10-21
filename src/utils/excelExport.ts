@@ -8,7 +8,7 @@ export function exportRecordsToExcel(
 ): { success: boolean; filename: string; rowCount: number } {
   const wb = XLSX.utils.book_new();
 
-  // 1. Prepare Main Molex Data Sheet
+  // 1. Prepare Main Molex Data Sheet with datasourcePdf
   const headers: string[] = [];
   if (options.includeIndex) headers.push('#');
   if (options.includeInputLink) headers.push('Input Molex Link');
@@ -16,6 +16,7 @@ export function exportRecordsToExcel(
   headers.push('Product Number Hyphen');
   headers.push('Product Number SAP');
   headers.push('Product Status');
+  headers.push('Datasheet PDF');
   if (options.includeTimestamp) headers.push('Extracted At');
 
   const rows: (string | number)[][] = [headers];
@@ -28,6 +29,7 @@ export function exportRecordsToExcel(
     row.push(rec.productNumberHyphen || '');
     row.push(rec.productNumberSap || '');
     row.push(rec.productStatus || 'Unpublished');
+    row.push(rec.datasourcePdf || '');
     if (options.includeTimestamp) row.push(new Date(rec.extractedAt).toLocaleString());
     rows.push(row);
   });
@@ -55,19 +57,32 @@ export function exportRecordsToExcel(
     ws['!autofilter'] = { ref: `A1:${lastColLetter}${rows.length}` };
   }
 
-  // Add hyperlinks for Molex URLs in the sheet
-  if (options.includeInputLink) {
-    const linkColIdx = options.includeIndex ? 1 : 0;
-    records.forEach((rec, idx) => {
-      const rowIndex = idx + 2; // 1-indexed, row 1 is header
+  // Add hyperlinks for Molex URLs and Datasheet PDFs in the sheet
+  records.forEach((rec, idx) => {
+    const rowIndex = idx + 2; // 1-indexed, row 1 is header
+    let colIdx = 0;
+    if (options.includeIndex) colIdx++;
+    if (options.includeInputLink) {
       if (rec.sourceUrl.startsWith('http://') || rec.sourceUrl.startsWith('https://')) {
-        const cellRef = XLSX.utils.encode_cell({ r: rowIndex - 1, c: linkColIdx });
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex - 1, c: colIdx });
         if (ws[cellRef]) {
           ws[cellRef].l = { Target: rec.sourceUrl, Tooltip: 'Open source Molex JSON URL' };
         }
       }
-    });
-  }
+      colIdx++;
+    }
+
+    // Skip Display, Hyphen, SAP, Status columns (4 columns)
+    colIdx += 4;
+
+    // Datasheet PDF hyperlink
+    if (rec.datasourcePdf && (rec.datasourcePdf.startsWith('http://') || rec.datasourcePdf.startsWith('https://'))) {
+      const pdfCellRef = XLSX.utils.encode_cell({ r: rowIndex - 1, c: colIdx });
+      if (ws[pdfCellRef]) {
+        ws[pdfCellRef].l = { Target: rec.datasourcePdf, Tooltip: 'Open Datasheet PDF' };
+      }
+    }
+  });
 
   const sheetTitle = (options.sheetName || 'Molex Parts').slice(0, 31);
   XLSX.utils.book_append_sheet(wb, ws, sheetTitle);
@@ -98,13 +113,11 @@ export function exportRecordsToExcel(
     XLSX.utils.book_append_sheet(wb, summaryWs, 'Source Links Audit');
   }
 
-  // Clean filename
   let filename = options.filename.trim();
   if (!filename.toLowerCase().endsWith('.xlsx')) {
     filename += '.xlsx';
   }
 
-  // Trigger browser download
   XLSX.writeFile(wb, filename);
 
   return {
@@ -115,13 +128,14 @@ export function exportRecordsToExcel(
 }
 
 export function exportRecordsToCsv(records: ExtractedRecord[], filename = 'molex_parts_extracted.csv'): void {
-  const headers = ['Input Molex Link', 'Product Number Display', 'Product Number Hyphen', 'Product Number SAP', 'Product Status', 'Extracted At'];
+  const headers = ['Input Molex Link', 'Product Number Display', 'Product Number Hyphen', 'Product Number SAP', 'Product Status', 'Datasheet PDF', 'Extracted At'];
   const rows = records.map((r) => [
     `"${(r.sourceUrl || '').replace(/"/g, '""')}"`,
     `"${(r.productNumberDisplay || '').replace(/"/g, '""')}"`,
     `"${(r.productNumberHyphen || '').replace(/"/g, '""')}"`,
     `"${(r.productNumberSap || '').replace(/"/g, '""')}"`,
     `"${(r.productStatus || '').replace(/"/g, '""')}"`,
+    `"${(r.datasourcePdf || '').replace(/"/g, '""')}"`,
     `"${r.extractedAt}"`,
   ]);
 
@@ -138,13 +152,14 @@ export function exportRecordsToCsv(records: ExtractedRecord[], filename = 'molex
 }
 
 export function copyRecordsToClipboard(records: ExtractedRecord[]): Promise<boolean> {
-  const headers = ['Input Molex Link', 'Product Number Display', 'Product Number Hyphen', 'Product Number SAP', 'Product Status'];
+  const headers = ['Input Molex Link', 'Product Number Display', 'Product Number Hyphen', 'Product Number SAP', 'Product Status', 'Datasheet PDF'];
   const rows = records.map((r) => [
     r.sourceUrl,
     r.productNumberDisplay,
     r.productNumberHyphen,
     r.productNumberSap,
     r.productStatus,
+    r.datasourcePdf,
   ]);
   const tsvContent = [headers.join('\t'), ...rows.map((row) => row.join('\t'))].join('\n');
   return navigator.clipboard.writeText(tsvContent).then(() => true).catch(() => false);
