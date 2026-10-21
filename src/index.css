@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-primary: #CD3433;
+  }
+}
+
+.bg-primary {
+  background-color: #CD3433;
+}
+
+.text-primary {
+  color: #CD3433;
+}
+
+.border-primary {
+  border-color: #CD3433;
+}
