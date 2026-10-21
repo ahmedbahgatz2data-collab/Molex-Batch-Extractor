@@ -1,6 +1,6 @@
 {
   "name": "Molex Batch Extractor",
-  "description": "",
+  "description": "Molex batch extractor and final audit status reporter for productNumberDisplay, productNumberHyphen, productNumberSap, productStatus, and datasheet details to Excel (.xlsx). By Eng Ahmed Bahgat.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

@@ -457,7 +457,7 @@ export default function App() {
         )}
 
         {/* Primary Excel Export Bar */}
-        {records.length > 0 && (
+        {(records.length > 0 || urlJobs.length > 0) && (
           <ExportToolbar
             records={records}
             selectedIds={selectedIds}
